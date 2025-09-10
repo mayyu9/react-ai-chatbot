@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Styles from './Controls.module.css';
 
 const SendSvg = () => {
@@ -14,17 +15,43 @@ const SendSvg = () => {
     )
 };
 
-const Controls = () => {
+const Controls = ({onSend}) => {
+    const [content, setContent] = useState("")
+
+    const handleTextChange = (event) => {
+        setContent(event.target.value);
+    }
+
+    const handleSendBtnClick = () => {
+        if(content.length > 0) {
+            onSend(content);
+            setContent("");
+        }
+    }
+
+    const handleEnterPress = (event) => {
+        if(event.key === 'Enter' && !event.shiftKey) {
+            handleSendBtnClick()
+        }
+    }
+
     return(
         <div className={Styles.Controls}>
             <div className={Styles.TextAreaContainer}>
                 <textarea
                     className={Styles.TextArea}
                     placeholder="Enter the message for chatbot"
+                    onChange={handleTextChange}
+                    value={content}
+                    onKeyDown={handleEnterPress}
                 />
             </div>
             <div>
-                <button type="button" className={Styles.Button}>
+                <button 
+                    type="button" 
+                    className={Styles.Button}
+                    onClick={handleSendBtnClick}
+                >
                     <SendSvg />
                 </button>
             </div>
